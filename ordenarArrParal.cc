@@ -1,39 +1,32 @@
 #include "tarea_global.h"
 #include "ordenarArrSec.h" //para traer el quicksort
+#include <omp.h>
 
-void initOrdenParal(int* arr){
-    #pragma omp parallel num_thread(parametros.nthread) private(th_id) {
-        int size_thread = parametros.tamArray / parametros.nthread;
-        ordenarArrParal(arr,size_thread,parametros.nthread); //primera vez que se llama
-    }
-}
+void ordenarParal(int* arr, int size_thread, int nthreads)
+{
+    omp_set_num_threads(nthreads);
+    int th_id;
+    #pragma omp parallel private(th_id) shared(size_thread) 
 
+        //ordenarArrParal(arr,size_thread,parametros.nthread); //primera vez que se llama
+        th_id = omp_get_thread_num();
 
-void ordenarArrParal(int* arr, int size_thread, int nthread){
+        int inicio = size_thread * th_id;
+        int fin = inicio + size_thread;
 
-    #pragma omp_set_num_thread(nthread)
-    th_id = omp_get_thread_num();
+        if(!(size_thread == parametros.tamArray)){ //Si el tamaño de segmento del thread aun no es igual al tamaño del arreglo
+            quicksort(arr,inicio,fin - 1);
+            #pragma omp barrier //barrera de contencion
 
-    inicio = size_thread * th_id;
-    fin = inicio + size_thread;
-
-    if(!(size_thread == parametros.tamArray)){ //Si el tamaño de segmento del thread aun no es igual al tamaño del arreglo
-        quicksort(arr,inicio,size_thread - 1);
-        #pragma omp barrier //barrera de contencion
-
-        nthread/=2; //Se necesita la mitad de los thread
-        size_thread*=2; //Se abarca el doble en tamaño de segmento
-
-        //#pragma omp_set_num_threads(nthread);
-        ordenarArrParal(arr,th_id,size_thread,nthread);
-
-        //quicksort(array, 0, parametros.tamArray - 1);
-    } else { //iteracion final se ordena el arreglo completo
-        //single thread se encarga de ordenar el arreglo completo
-        #pragma omp single
-        quicksort(arr,0,parametros.tamArray-1); //Ultima revision se repasa el arreglo completo
-    }
-    //max num thread = tamArray
-
+            nthreads/=2; //Se necesita la mitad de los thread
+            size_thread*=2; //Se abarca el doble en tamaño de segmento
+            ordenarParal(arr,size_thread,nthreads);
+        } else { //iteracion final se ordena el arreglo completo
+            //single thread se encarga de ordenar el arreglo completo
+            #pragma omp single
+            quicksort(arr,0,parametros.tamArray-1); //Ultima revision se repasa el arreglo completo
+            #pragma omp_barrier
+            return;
+        }
     
 }

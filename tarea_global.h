@@ -14,7 +14,8 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <string.h>
-//#include <omp.h>
+#include <omp.h>
+
 
 struct args_t {
 
