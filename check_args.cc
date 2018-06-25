@@ -17,8 +17,8 @@ void print_usage(char* name){
 	char descripcion[] = "Descripción:\n"
 	                     "-n   Tamaño Array\n"
 	                     "-t   nº threads\n"
-	                     "-f   nombre de archivo de output con los numeros ordenados\n"
-	                     "-s   semilla (test)\n";
+	                     "-f   nombre de archivo de output con los numeros ordenados\n";
+	                     //"-s   semilla (test)\n";
 
 	printf("Uso: %s %s\n%s\n", name, opciones, descripcion);
 }
@@ -27,7 +27,7 @@ void print_usage(char* name){
 void check_args(int argc , char **argv){
 	int opcion;
 	//std::string optString = "f:h";
-	std::string optString = "n:t:f:s:h";
+	std::string optString = "n:t:f:h";
 
 	parametros.nombreArchivo = "";
 
@@ -44,9 +44,9 @@ void check_args(int argc , char **argv){
 					//strcpy(parametros.nombreArchivo, optarg);
 					parametros.nombreArchivo = optarg;
 					break;
-			case 's':
+			/*case 's':
 					parametros.seed = atoi(optarg);
-					break;
+					break;*/
 			case 'h':
 			default:
 					print_usage(argv[0]);

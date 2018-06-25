@@ -15,13 +15,15 @@
 #include <stdio.h>
 #include <string.h>
 #include <omp.h>
+#include <iostream>
+#include <fstream>
 
 
 struct args_t {
 
 	int tamArray;
 	int nThreads;
-	int seed;
+	//int seed;
     char* nombreArchivo;
 };
 
